@@ -1,401 +1,322 @@
-// import Axios from "axios";
-const {
-  Client,
-  LegacySessionAuth,
-  LocalAuth,
-  MessageMedia,
-  RemoteAuth,
-} = require("whatsapp-web.js");
-const qrcode = require("qrcode-terminal");
-const fs = require("fs");
-const Axios = require("axios");
-var FormData = require("form-data");
-// const {
-//   Sticker,
-//   createSticker,
-//   StickerTypes,
-// } = require("wa-sticker-formatter-gsf");
-// var webp = require("webp-converter-jr");
-const { Blob } = require("buffer");
-const { URLSearchParams } = require("url");
-// const extractFrames = require("ffmpeg-extract-frames");
-var express = require("express");
-var app = express();
-var path = require("path");
-const { MongoStore } = require("wwebjs-mongo");
-const mongoose = require("mongoose");
+const { initializeApp, } = require('firebase/app')
+const { getDatabase, ref, set } = require('firebase/database')
 
-app.use("/public", express.static(path.join(__dirname + "/public")));
 
-mongoose
-  .connect(
-    "mongodb+srv://aditya:aditya123@cluster0.9vjkq.mongodb.net/SessionData"
-  )
-  .then(() => {
-    const store = new MongoStore({ mongoose: mongoose });
-    const client = new Client({
-      puppeteer: {
-        executablePath:
-          "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-      },
-      // authStrategy: new LocalAuth({
-      //   clientId: "client-one",
-      // }),
-      puppeteer: {
-        headless: true,
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
-        // headless: false,
-      },
-      authStrategy: new RemoteAuth({
-        store: store,
-        backupSyncMs: 300000,
-      }),
-    });
 
-    //Start Of Client.On Codes
+const qrcode = require('qrcode-terminal');
 
-    client.on("authenticated", (session) => {
-      console.log("WHATSAPP WEB => Authenticated");
-    });
 
-    client.on("ready", async () => {
-      console.log("WHATSAPP WEB => Ready");
-    });
+const { Client, LocalAuth, NoAuth } = require('whatsapp-web.js');
 
-    client.on("qr", (qr) => {
-      qrcode.generate(qr, { small: true });
-    });
 
-    client.on("message", async (msg) => {
-      if (msg.body.toUpperCase() == "HEY BOOGY") {
-        msg.reply("hey " + msg._data.notifyName + " How It's Going .. Bro😎");
-        var msgtosend = MessageMedia.fromFilePath("./public/Boogy.webp");
-        msg.reply(msgtosend, "", { sendMediaAsSticker: true });
-      }
-      if (msg._data.type == "sticker") {
-        // console.log(msg);
-        // msg.downloadMedia().then((e) => {
-        //   console.log(JSON.stringify(e));
-        //   fs.writeFile(
-        //     "./public/BoogyLazyJSON.json",
-        //     JSON.stringify(e),
-        //     (d) => {
-        //       console.log(d);
-        //     }
-        //   );
-        // });
-        // client.sendMessage(msg._data.id._serialized.split("_")[1], e, {
-        //   sendMediaAsSticker: true,
-        //   stickerName: "Boogy Bot!",
-        //   stickerAuthor: "By Aditya Kumar!!",
-        // });
-        // });
-      }
-      // console.log(msg);
-    });
-    var reg = new RegExp("^[0-9]*$");
-    client.on("message_create", async (m) => {
-      if (m._data.id.fromMe) {
-        // console.log(m);
-        if (m._data.body?.length >= 10) {
-          if (m._data.body.substring(0, 8).toUpperCase() == "SPAMHERE") {
-            const tosenddat = m._data.body.substring(9, m._data.body.length);
-            // console.log(tosenddat);
-            const tosendCount = m._data.body.substring(9, 12);
-            if (m.hasQuotedMsg) {
-              if (reg.test(tosendCount)) {
-                if (m._data.quotedMsg.type == "chat") {
-                  m.delete(true);
-                  for (let index = 0; index < tosendCount; index++) {
-                    await client.sendMessage(
-                      m._data.to,
-                      m._data.quotedMsg.body
-                    );
-                  }
-                } else if (m._data.quotedMsg.type == "sticker") {
-                  if (reg.test(tosendCount)) {
-                    var msgtosend = MessageMedia.fromFilePath(
-                      "./public/BoogyLazy.webp"
-                    );
-                    var delidsnd = await client.sendMessage(
-                      m._data.id._serialized.split("_")[1],
-                      msgtosend,
-                      { sendMediaAsSticker: true }
-                    );
-                    var delid = await client.sendMessage(
-                      m._data.id._serialized.split("_")[1],
-                      "Wait Bro Feeling Lazy...",
-                      { sendMediaAsSticker: true }
-                    );
 
-                    // console.log("hmm");
-                    // console.log(m._data.to);
-                    m.getQuotedMessage().then(async (dat) => {
-                      m.delete(true);
-                      if (dat.hasMedia) {
-                        var dd = await dat.downloadMedia();
+var A1Grp, session;
 
-                        var doneOnce = false;
-                        for (let index = 0; index < tosendCount; index++) {
-                          await client.sendMessage(
-                            dat._data.id._serialized.split("_")[1],
-                            dd,
-                            {
-                              sendMediaAsSticker: true,
-                              stickerName: "Boogy Bot!",
-                              stickerAuthor: "By Aditya Kumar!!",
-                            }
-                          );
-                          if (!doneOnce) {
-                            delidsnd.delete(true);
-                            setTimeout(() => {
-                              delid.delete(true);
-                            }, 1000);
-                            doneOnce = true;
-                          }
-                        }
-                      }
-                    });
-                  }
-                } else if (m._data.quotedMsg.isGif) {
-                  m.getQuotedMessage().then(async (dat) => {
-                    m.delete(true);
-                    if (dat.hasMedia) {
-                      // var dd = await dat.downloadMedia();
-                      // console.log(dd);
-                      // await fs.writeFileSync(
-                      //   "stickerName.mp4",
-                      //   new Buffer.from(dd.data, "base64")
-                      // );
-                      // // var datbuf = await new Buffer.from(dd.data, "base64");
-                      // var msgofbuf = MessageMedia.fromFilePath("stickerName.mp4");
-                      // client.sendMessage(
-                      //   dat._data.id._serialized.split("_")[1],
-                      //   dd,
-                      //   {
-                      //     sendVideoAsGif: true,
-                      //   }
-                      // );
-                      // await extractFrames({
-                      //   input: "stickerName.mp4",
-                      //   output: `./temp/for${
-                      //     dat._data.id._serialized.split("_")[2]
-                      //   }/frame-%d.png`,
-                      // });
-                      // fs.readdir(
-                      //   `./temp/for${dat._data.id._serialized.split("_")[2]}`,
-                      //   {},
-                      //   (f) => console.log(f)
-                      // );
-                      //To Do-------------|
-                      // Take All Frames of Video
-                      // SAVE All
-                      // Make All JPG TO WEBP(Web Pictures)
-                      // Make Animation From All Given WEBP Images
-                      // Take Animated WEBP FILE MAKE Message Media
-                      // Sent It ......🙌🙌🙌💕👍⭐⭐⭐⭐⭐⭐⭐⭐⭐
-                      // var formData = new FormData();
-                      // formData.append("class", "image");
-                      // formData.append("from", "video");
-                      // formData.append("to", "webp");
-                      // formData.append("source", "upload");
-                      // formData.append("file", datbuf, "stickerName.mp4");
-                      // fs.writeFile(
-                      //   "stickerName.mp4",
-                      //   new Buffer.from(dd.data, "base64")
-                      // );
-                      // console.log(dat);
-                      // console.log(formData);
-                      // var dt = await Axios.request({
-                      //   method: "POST",
-                      //   url: "https://hostspeedy.onlineconverter.com/file/send",
-                      //   data: formData,
-                      //   headers: {
-                      //     ...formData.getHeaders()
-                      //   },
-                      // });
-                      // console.log(dt);
-                      // var readdat = await fs.readFile();
-                      // Axios.post()
-                      // Axios.post(
-                      //   "https://hostspeedy.onlineconverter.com/file/send",
-                      //   formData,
-                      //   {}
-                      // ).then((dat) => {
-                      //   console.log(dat.data);
-                      // });
-                      // var buff = new Buffer.from(dd.data, "base64");
-                      // fs.writeFile(
-                      //   "stickerName.mp4",
-                      //   new Buffer.from(dd.data, "base64"),
-                      //   async () => {
-                      //     fs.readFile("stickerName.mp4", (d) => {
-                      //       var formData = new FormData();
-                      //       formData.append("class", "image");
-                      //       formData.append("from", "video");
-                      //       formData.append("to", "webp");
-                      //       formData.append("source", "upload");
-                      //       formData.append(
-                      //         "file",
-                      //         new Buffer.from(dd.data, "base64"),
-                      //         {
-                      //           filename: "stickerName.mp4",
-                      //           contentType: "video/mp4",
-                      //         }
-                      //       );
-                      //       axios
-                      //         .post(
-                      //           "https://hostspeedy.onlineconverter.com/file/send",
-                      //           formData,
-                      //           {
-                      //             headers: {
-                      //               "Content-Type": "multipart/form-data",
-                      //             },
-                      //           }
-                      //         )
-                      //         .then((dat) => {
-                      //           console.log(dat);
-                      //         });
-                      //     });
-                      //   }
-                      // );
-                      // const buffer = await createSticker(
-                      //   new Buffer.from(dd.data, "base64"),
-                      //   {
-                      //     pack: "Boggy Bot!",
-                      //     author: "Aditya",
-                      //     type: StickerTypes.FULL,
-                      //     categories: ["🤩", "🎉"],
-                      //     id: "12345",
-                      //     quality: 50,
-                      //     background: "#000000",
-                      //   }
-                      // );
-                      // console.log(buffer);
-                      // for (let index = 0; index < tosendCount; index++) {
-                      //   client.sendMessage(
-                      //     dat._data.id._serialized.split("_")[1],
-                      //     dd,
-                      //     {
-                      //       sendVideoAsGif: true,
-                      //     }
-                      //   );
-                      // }
-                    }
-                  });
-                } else if (m._data.quotedMsg.type == "image") {
-                  if (reg.test(tosendCount)) {
-                    var msgtosend = MessageMedia.fromFilePath(
-                      "./public/BoogyLazy.webp"
-                    );
-                    var delidsnd = await client.sendMessage(
-                      m._data.id._serialized.split("_")[1],
-                      msgtosend,
-                      { sendMediaAsSticker: true }
-                    );
-                    var delid = await client.sendMessage(
-                      m._data.id._serialized.split("_")[1],
-                      "Wait Bro Feeling Lazy...",
-                      { sendMediaAsSticker: true }
-                    );
-                    m.getQuotedMessage().then(async (dat) => {
-                      m.delete(true);
-                      if (dat.hasMedia) {
-                        var dd = await dat.downloadMedia();
 
-                        var doneOnce = false;
-                        for (let index = 0; index < tosendCount; index++) {
-                          await client.sendMessage(
-                            dat._data.id._serialized.split("_")[1],
-                            dd,
-                            {
-                              sendMediaAsSticker: true,
-                              stickerName: "Boogy Bot!",
-                              stickerAuthor: "By Aditya Kumar!!",
-                            }
-                          );
-                          if (!doneOnce) {
-                            delidsnd.delete(true);
-                            setTimeout(() => {
-                              delid.delete(true);
-                            }, 1000);
-                            doneOnce = true;
-                          }
-                        }
-                      }
-                    });
-                  }
-                }
-              }
-            }
-            if (tosenddat.includes("dp")) {
-              m.delete(true);
-              var msgtosend = MessageMedia.fromFilePath(
-                "./public/BoogyLazy.webp"
-              );
-              var delidsnd = await client.sendMessage(
-                m._data.id._serialized.split("_")[1],
-                msgtosend,
-                { sendMediaAsSticker: true }
-              );
-              var delid = await client.sendMessage(
-                m._data.id._serialized.split("_")[1],
-                "Wait Bro Feeling Lazy...",
-                { sendMediaAsSticker: true }
-              );
-              const sdt = tosenddat.substring(3, 6);
-              var pic = await client.getProfilePicUrl(
-                m._data.id._serialized.split("_")[1]
-              );
-              const makemsg = await MessageMedia.fromUrl(pic);
 
-              var doneOnce = false;
+// Initialize Firebase
 
-              for (let index = 0; index < sdt; index++) {
-                await client.sendMessage(m._data.to, makemsg, {
-                  sendMediaAsSticker: true,
-                  stickerName: "Boggy Bot!",
-                  stickerAuthor: "By Aditya!!",
-                });
-                if (!doneOnce) {
-                  delidsnd.delete(true);
-                  setTimeout(() => {
-                    delid.delete(true);
-                  }, 1000);
-                  doneOnce = true;
-                }
-              }
-            }
-          }
-        }
-      }
-    });
+const firebaseConfig = {
+  apiKey: "AIzaSyAyB_qLzn3D8W1M1mEPKNhmDMr-hGlj8Dw",
+  authDomain: "whatsapp-bot-5fe3b.firebaseapp.com",
+  projectId: "whatsapp-bot-5fe3b",
+  databaseURL: "https://whatsapp-bot-5fe3b-default-rtdb.firebaseio.com",
+  storageBucket: "whatsapp-bot-5fe3b.appspot.com",
+  messagingSenderId: "1072347540890",
+  appId: "1:1072347540890:web:38c9c6429e8024589fde23"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase();
 
-    //end Of Client.On Codes
 
-    client.initialize();
-  });
-
-app.use(express.static(__dirname + "/"));
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "./index.html"));
+const mainID_Motion = new Client({
+  authStrategy: new LocalAuth({ // saved session object
+    clientId: "main-id"
+  })
+  //authStrategy: new LocalAuth({  clientId: "mainID_Motion-one" })
 });
-app.listen(process.env.PORT || 8080);
 
-// const client = new Client();
+const admin_id = new Client({
+  authStrategy: new LocalAuth({ clientId: "admin-id" })
+});
 
-// const client = new Client({
-//   puppeteer: {
-//     executablePath: "/usr/bin/brave-browser-stable",
-//   },
-//   authStrategy: new LocalAuth({
-//     clientId: "client-one",
-//   }),
-//   puppeteer: {
-//     headless: true,
-//     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-//     // headless: false,
-//   },
-// });
 
-// client.initialize();
+
+
+
+
+
+
+
+admin_id.on('qr', (qr) => {
+  console.log('QR RECEIVED For ADMIN ID', qr);
+  qrcode.generate(qr, { small: true });
+});
+
+admin_id.on('ready', () => {
+  console.log('Admin is ready!');
+
+  admin_id.sendMessage('120363039577912932@g.us', "Admin is Ready")
+
+
+  //Authenticate();
+
+
+});
+
+admin_id.on('message', (message) => {
+
+  var times = 50;
+
+  if (message.body == '.Auth') {
+    // Authenticate();
+  } else if (message.body == '.getAC') {
+    getchat();
+    console.LOG("Getting All Chats")
+    console.log("━━╬٨ـﮩﮩ❤٨ـﮩﮩـ╬━❤️❥❥═══ 🅻🅾🅰🅳🅸🅽🅶😦 ══━━╬٨ـﮩﮩ❤٨ـﮩﮩـ╬━")
+  } else if (message.body == '.sL') {
+    startLeaching();
+  }else if(message.body =='.bombKunal'){
+    //console.log(parseInt(message.split(',')[1]))
+    console.log("Hlo")
+    console.log(message.body.includes('.bombKunal'))
+
+    for(const i=0 ;i < times; i++){
+      admin_id.sendMessage('918949591349@c.us',".hleo")
+
+    }
+
+  }
+  
+  if(message.body.includes('.bombKunal')){
+    //console.log(parseInt(message.split(',')[1]))
+    console.log("OK")
+
+    // for(const i=0 ;i < times; i++){
+    //   admin_id.sendMessage('918949591349@c.us',"Hii")
+
+    // }
+
+  }else{
+
+  
+}
+console.log(message.body.includes('.bombKunal'))
+}
+
+)
+
+
+
+
+
+
+
+
+
+
+
+mainID_Motion.on('qr', (qr) => {
+  console.log('QR RECEIVED for Main ID', qr);
+  qrcode.generate(qr, { small: true });
+});
+
+
+
+
+
+
+mainID_Motion.on('ready', () => {
+  console.log('Client is ready!');
+
+
+  mainID_Motion.sendMessage('120363039577912932@g.us', 'Me izz ready!')
+  // Authenticate();
+
+});
+
+
+
+
+
+
+async function getchat() {
+  let chats = await mainID_Motion.getChats();
+  console.log("Got All Chats Serching For A1")
+  LOGG('mainID', "Got All Chats Serching For A1");
+
+  for (const chat of chats) {
+
+    //   //console.log(Object.keys(chat))
+    console.log([chat.id, chat.name])
+    if (chat.name === 'P23(Early Enthuse) 22 Nov') {
+
+      console.log("Chat Id Setteled to " + chat.name)
+      LOGG('mainID', "Chat Id Setteled to " + chat.name)
+      A1Grp = chat
+
+      break;
+
+
+    }
+
+    // }
+  }
+
+  //const DeltaGrpChat = await chats[1].fetchMessages({limit : 5});
+
+
+  //  console.log("getting Chat from chat id") 
+  // chats[1].fetchMessages().then(messages => {
+  //   console.log("got chats")
+  //   
+  //  console.log(messages)
+  // });
+
+}
+async function startLeaching() {
+
+  console.log("Getting All The Messages")
+  const messages = await A1Grp.fetchMessages({limit:50});
+    console.log("Got All Messages")
+    
+    console.log(messages)
+    UploadToFirebase(messages);
+
+}
+
+// async function GetMainIDSession(){
+
+//   onValue(ref(db, 'Secret/mainId62014/'), (Session) => {
+
+//     if(Session.exists()){
+//     session = Session.session
+//     Authenticate()
+//   }else{
+//     session = {}
+//   }
+
+
+//     // ...
+//   }, {
+//     onlyOnce: true
+//   });
+
+
+// }
+
+
+
+
+
+function UploadToFirebase(messages) {
+
+  LOGG('mainID', 'Updating To Firebase.....')
+
+  //console.log(messages)
+
+  for (let message of messages) {
+
+    if (typeof message.links[0] != "undefined") {
+
+      if (message.body.includes("zoom.us/rec/share")) {
+        console.log(message)
+        let teacher;
+        // if(message.body.toUpperCase().includes("LIVE CLASS BY")){
+         teacher = message.body.toUpperCase().split("LIVE CLASS BY")[1].trim().split("\n")[0];//}else{
+        //   teacher = message.body.toUpperCase().split("LIVE CLASS BY ")[1].split("\N")[0];  
+        // }
+        let timing = message.body.split("Start Time: ")[1].split("\n\nMeeting")[0];
+        let link = message.links[0].link
+
+
+        Upload(teacher,timing,link);
+        //admin_id.sendMessage('120363039577912932@g.us', "Uploaded " + teacher + " : " + timing + "to Firebase Succesfully");
+
+        console.log(timing)
+
+
+
+
+      } else {
+        console.log("I Am Not Reading It 'LOL' 🤣")
+      }
+    } else { console.log("Gim Me A Link Bruh 😢") }
+    //console.log(["message._data.matchedText",message._data.matchedText])
+    //console.log(["Object.keys(message)",Object.keys(message)])
+  }
+}
+
+
+
+
+mainID_Motion.on('message', (message) => {
+  // if (message.body === '!ping') {
+  //   message.reply('pong');
+  // }
+  // if (message.body === '.ping') {
+  //   mainID_Motion.sendMessage(message.from, 'pong');
+  // }
+  //console.log(message)
+
+  if (typeof message.links[0] != "undefined") {
+
+    if (message.body.includes("zoom.us/rec/share")) {
+
+      let teacher = message.body.toUpperCase().split("LIVE CLASS BY")[1].trim().split("\n")[0];
+      let timing = message.body.split("Start Time: ")[1].split("\n\nMeeting")[0];
+      let link = message.links[0].link
+
+
+      Upload(teacher,timing,link)
+
+      console.log({ timing: teacher })
+
+
+
+
+    } else {
+      console.log("I Am Not Reading It LOL")
+    }
+  } else { }
+  //console.log(["message._data.matchedText",message._data.matchedText])
+  //console.log(["Object.keys(message)",Object.keys(message)])
+});
+
+
+
+
+
+
+
+admin_id.initialize();
+
+
+mainID_Motion.initialize();
+
+function LOGG(id,message) {
+  if(id === 'mainID'){
+    mainID_Motion.sendMessage('120363039577912932@g.us', message)
+  }else if(id === 'admin'){
+    admin_id.sendMessage('120363039577912932@g.us', message)
+  }
+}
+
+function Upload(teacher,timing,link){
+  set(ref(db, 'Motion Lectures/' + teacher.split(" ")[0] + " Sir" + "/" + timing), {
+
+    link: link
+    
+
+    
+
+  }).then(() => {
+    // Data saved successfully!
+    console.log('Uploaded ' + teacher + ' : ' + timing + 'to Firebase Succesfully')
+    //admin_id.sendMessage('120363039577912932@g.us', 'Uploaded ' + teacher + ' : ' + timing + 'to Firebase Succesfully')
+  }).catch((error)=>{
+    console.log('Uploading ' + teacher + ' : ' + timing + 'to Firebase was UnSuccessfull..............        '+toString(error))
+    //admin_id.sendMessage('120363039577912932@g.us', 'Uploading ' + teacher + ' : ' + timing + 'to Firebase was UnSuccessfull..............        '+toString(error))
+  })
+
+}
