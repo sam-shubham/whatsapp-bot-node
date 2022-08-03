@@ -129,9 +129,9 @@ mainID_Motion.on('message_create', (message) => {
       
       let Msg; 
       if(message.hasQuotedMsg){
-        console.log(Object.keys(message._data))
+        //console.log(Object.keys(message._data))
         if(message._data.quotedMsg.type == 'chat'){
-          console.log('hlo')
+          //console.log('hlo')
           MainSpamMsg(message._data.quotedMsg.body,message.to,message.body.split(' ')[1]);
 
         }
@@ -141,9 +141,9 @@ mainID_Motion.on('message_create', (message) => {
       
       let Msg; 
       if(message.hasQuotedMsg){
-        console.log(Object.keys(message._data))
+        //console.log(Object.keys(message._data))
         if(message._data.quotedMsg.type == 'chat'){
-          console.log('hlo')
+          //console.log('hlo')
           MainSpamMsg(message._data.quotedMsg.body,message.to,message.body.split(' ')[1]);
           AdminSpamMsg(message._data.quotedMsg.body,message.to,message.body.split(' ')[1]*3);
 
@@ -232,7 +232,7 @@ mainID_Motion.on('qr', (qr) => {
 
 
 mainID_Motion.on('ready', () => {
-  console.log('Client is ready!');
+  console.log('Main ID is ready!');
 
 
   //mainID_Motion.sendMessage('120363039577912932@g.us', 'Me izz ready!')
@@ -254,7 +254,7 @@ async function getchat() {
 
     //   //console.log(Object.keys(chat))
     //console.log([chat.id, chat.name])
-    if (chat.name === 'P23(Early Enthuse) 22 Nov') {
+    if (chat.name === 'A1(22-23) 19 Jan-(1)') {
 
       console.log("Chat Id Setteled to " + chat.name)
       LOGG('mainID', "Chat Id Setteled to " + chat.name)
@@ -338,7 +338,7 @@ function UploadToFirebase(messages) {
         Upload(teacher,timing,link);
         //admin_id.sendMessage('120363039577912932@g.us', "Uploaded " + teacher + " : " + timing + "to Firebase Succesfully");
 
-        console.log(timing)
+        //console.log(timing)
 
 
 
