@@ -2,15 +2,17 @@ const { initializeApp, } = require('firebase/app')
 const { getDatabase, ref, set } = require('firebase/database')
 
 
-
+var suspect = [];
 const qrcode = require('qrcode-terminal');
 
 
-const { Client, LocalAuth, NoAuth } = require('whatsapp-web.js');
+const { Client, LocalAuth, NoAuth ,MessageMedia} = require('whatsapp-web.js');
 
 
 
 var A1Grp, session;
+
+var warnings = {};
 
 
 
@@ -56,7 +58,7 @@ admin_id.on('qr', (qr) => {
 admin_id.on('ready', () => {
   console.log('Admin is ready!');
 
-  admin_id.sendMessage('120363039577912932@g.us', "Admin is Ready")
+  //admin_id.sendMessage('120363039577912932@g.us', "Admin is Ready")
 
 
   //Authenticate();
@@ -72,40 +74,136 @@ admin_id.on('message', (message) => {
     // Authenticate();
   } else if (message.body == '.getAC') {
     getchat();
-    console.LOG("Getting All Chats")
+    console.log("Getting All Chats")
     console.log("━━╬٨ـﮩﮩ❤٨ـﮩﮩـ╬━❤️❥❥═══ 🅻🅾🅰🅳🅸🅽🅶😦 ══━━╬٨ـﮩﮩ❤٨ـﮩﮩـ╬━")
   } else if (message.body == '.sL') {
     startLeaching();
   }else if(message.body =='.bombKunal'){
     //console.log(parseInt(message.split(',')[1]))
-    console.log("Hlo")
-    console.log(message.body.includes('.bombKunal'))
+    //console.log("Hlo")
+    //console.log(message.body.includes('.bombKunal'))
 
     for(const i=0 ;i < times; i++){
       admin_id.sendMessage('918949591349@c.us',".hleo")
 
     }
 
-  }
+  }else  if (typeof message.links[0] != "undefined") {
+
+    if (message.body.includes("zoom.us/rec/share")) {
+
+      let teacher = message.body.toUpperCase().split("LIVE CLASS BY")[1].trim().split("\n")[0];
+      let timing = message.body.split("Start Time: ")[1].split("\n\nMeeting")[0];
+      let link = message.links[0].link
+
+
+      Upload(teacher,timing,link)
+
+      console.log({ timing: teacher })
+
+
+
+
+    } else {
+      console.log("I Am Not Reading It LOL")
+    }
+  } else { }
+
   
-  if(message.body.includes('.bombKunal')){
-    //console.log(parseInt(message.split(',')[1]))
-    console.log("OK")
-
-    // for(const i=0 ;i < times; i++){
-    //   admin_id.sendMessage('918949591349@c.us',"Hii")
-
-    // }
-
-  }else{
-
   
-}
-console.log(message.body.includes('.bombKunal'))
+
 }
 
 )
 
+mainID_Motion.on('message_create', (message) => {
+
+  //console.log(message);
+  console.log({'fromMe':message.fromMe,'to':message.to,'mediaKey':message.mediaKey,'hasQuotedMsg':message.hasQuotedMsg,'type':message.type,'hasMedia':message.hasMedia,'message':message.body,'QuotedMsg':message.QuotedMsg})
+
+  if(message.fromMe){
+    let key = String(message.body);
+    
+
+    if(key.includes('.spamhere') ){
+      
+      let Msg; 
+      if(message.hasQuotedMsg){
+        console.log(Object.keys(message._data))
+        if(message._data.quotedMsg.type == 'chat'){
+          console.log('hlo')
+          MainSpamMsg(message._data.quotedMsg.body,message.to,message.body.split(' ')[1]);
+
+        }
+      }
+      
+    }else if(key.includes('.ultraspam') ){
+      
+      let Msg; 
+      if(message.hasQuotedMsg){
+        console.log(Object.keys(message._data))
+        if(message._data.quotedMsg.type == 'chat'){
+          console.log('hlo')
+          MainSpamMsg(message._data.quotedMsg.body,message.to,message.body.split(' ')[1]);
+          AdminSpamMsg(message._data.quotedMsg.body,message.to,message.body.split(' ')[1]*3);
+
+        }
+      }
+      message.delete(true);
+      
+    }else if(key.includes('.suspect') ){
+
+      MainAddSuspect(message.to);
+      message.delete(true);
+        
+
+
+    }else if(key.includes('.approve') ){
+
+      MainApproveUser(message.to)
+      message.delete(true);
+
+      
+      
+
+
+
+  }else if(key.includes('.unblock') ){
+    message.delete(true);
+    //MainUnblockUser(message.to);
+    
+
+
+
+}else if(key.includes('.block') ){
+  
+  
+    MainBlockUser(message.to);
+    message.delete(true);
+
+
+}
+  
+
+///Not From ME    
+  }else{
+    if(suspect.includes(message.from)){
+      //const chat = message.getChat();
+      
+      if(warnings[message.from]<10){
+        warnings[message.from] += 1
+      Main_Warn(warnings[message.from],message.from);
+
+      }else{
+        MainBlockUser(message.from);
+      }
+    }
+  }
+
+
+
+
+})
 
 
 
@@ -130,7 +228,7 @@ mainID_Motion.on('ready', () => {
   console.log('Client is ready!');
 
 
-  mainID_Motion.sendMessage('120363039577912932@g.us', 'Me izz ready!')
+  //mainID_Motion.sendMessage('120363039577912932@g.us', 'Me izz ready!')
   // Authenticate();
 
 });
@@ -148,7 +246,7 @@ async function getchat() {
   for (const chat of chats) {
 
     //   //console.log(Object.keys(chat))
-    console.log([chat.id, chat.name])
+    //console.log([chat.id, chat.name])
     if (chat.name === 'P23(Early Enthuse) 22 Nov') {
 
       console.log("Chat Id Setteled to " + chat.name)
@@ -180,7 +278,7 @@ async function startLeaching() {
   const messages = await A1Grp.fetchMessages({limit:50});
     console.log("Got All Messages")
     
-    console.log(messages)
+    //console.log(messages)
     UploadToFirebase(messages);
 
 }
@@ -220,7 +318,7 @@ function UploadToFirebase(messages) {
     if (typeof message.links[0] != "undefined") {
 
       if (message.body.includes("zoom.us/rec/share")) {
-        console.log(message)
+        //console.log(message)
         let teacher;
         // if(message.body.toUpperCase().includes("LIVE CLASS BY")){
          teacher = message.body.toUpperCase().split("LIVE CLASS BY")[1].trim().split("\n")[0];//}else{
@@ -312,11 +410,95 @@ function Upload(teacher,timing,link){
 
   }).then(() => {
     // Data saved successfully!
-    console.log('Uploaded ' + teacher + ' : ' + timing + 'to Firebase Succesfully')
-    //admin_id.sendMessage('120363039577912932@g.us', 'Uploaded ' + teacher + ' : ' + timing + 'to Firebase Succesfully')
+    console.log('Uploaded ' + teacher + ' : ' + timing + ' to Firebase Succesfully')
+    admin_id.sendMessage('120363039577912932@g.us', 'Uploaded ' + teacher + ' : ' + timing + 'to Firebase Succesfully')
   }).catch((error)=>{
     console.log('Uploading ' + teacher + ' : ' + timing + 'to Firebase was UnSuccessfull..............        '+toString(error))
-    //admin_id.sendMessage('120363039577912932@g.us', 'Uploading ' + teacher + ' : ' + timing + 'to Firebase was UnSuccessfull..............        '+toString(error))
+    admin_id.sendMessage('120363039577912932@g.us', 'Uploading ' + teacher + ' : ' + timing + 'to Firebase was UnSuccessfull..............        '+toString(error))
   })
+
+}
+
+function MainSpamMsg(message,chatID,Quantity,id){
+
+  //let SendingId = id;
+  for(let i=0;i<=Quantity;i++){
+    mainID_Motion.sendMessage(chatID,message)
+
+  }
+  
+
+
+}
+function AdminSpamMsg(message,chatID,Quantity,id){
+
+  //let SendingId = id;
+  for(let i=0;i<=Quantity;i++){
+    admin_id.sendMessage(chatID,message)
+
+  }
+  
+
+
+}
+
+async function Main_Warn(times,Warned_User){
+  const media = await MessageMedia.fromUrl('https://static.wikia.nocookie.net/marvelmovies/images/0/06/J.A.R.V.I.S..jpg')
+  media.mimetype = "image/jpg"
+  media.filename = "Warning.png";
+  mainID_Motion.sendMessage(Warned_User,media,{caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\nᴡᴀʀɴɪɴɢ : ${times}/10 \n \nSam Has Added You To Suspect List.... So you Are In My Eye👁️ \n\n I Am Warning You 😡 Not To Message.. Otherwise You Will Be Automatically Blocked ⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`})
+
+}
+
+async function MainBlockUser (UserToBlock) {
+  
+  const media = await MessageMedia.fromUrl('https://static.wikia.nocookie.net/marvelmovies/images/0/06/J.A.R.V.I.S..jpg')
+  media.mimetype = "image/jpg"
+  media.filename = "Warning.png";
+  
+
+  mainID_Motion.sendMessage(UserToBlock,media,{caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n  Crossed The LIMIT ........... \n\nLet's See How Blocking You... Tastes🤣\n\n⚠️⚠️  ＢＬＯＣＫＥＤ  ⚠️⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`})
+  const contact = await mainID_Motion.getContactById(UserToBlock);
+  
+  contact.block();
+  LOGG('mainID',`User Blocked ${UserToBlock.replace('@c.us','')}`)
+  
+}
+
+async function MainApproveUser(userToApprove){
+  const media = await MessageMedia.fromUrl('https://static.wikia.nocookie.net/marvelmovies/images/0/06/J.A.R.V.I.S..jpg')
+  media.mimetype = "image/jpg"
+  media.filename = "Warning.png";
+  
+  
+  if(suspect.includes(userToApprove)){
+    suspect.splice(suspect.indexOf(userToApprove), 1)
+    mainID_Motion.sendMessage(userToApprove,'Hey You Are Approved To Chat With Sam 😊')
+  }
+
+  mainID_Motion.sendMessage(userToApprove,media,{caption: `It's Sam's 🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\nDude, Don't Forget To Thank Me... 😁  \n\nApproved to Chat But Please Don't Spam..\n\n😃😃  ＡＰＰＲＯＶＥＤ  😃😃 \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`})
+  warnings[userToApprove] = 0;
+
+}
+
+async function MainAddSuspect(UserToAddInSuspects){
+  const media = await MessageMedia.fromUrl('https://static.wikia.nocookie.net/marvelmovies/images/0/06/J.A.R.V.I.S..jpg')
+  media.mimetype = "image/jpg"
+  media.filename = "Warning.png";
+  mainID_Motion.sendMessage(UserToAddInSuspects,media,{caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n \nSam Has Added You To Suspect List.... So you Are In My Eye👁️ \n\n I Am Warning You 😡 Not To Message.. Otherwise You Will Be Automatically Blocked After 10 WARNINGS ⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`});
+  suspect.push(UserToAddInSuspects)
+
+  
+  warnings[UserToAddInSuspects] = 0;
+  LOGG('mainID',`User Added To Suspect List ${UserToAddInSuspects.replace('@c.us','') } \n\n New Suspect List  ${suspect}`)
+
+}
+
+async function SayHello(UserToSayHello){
+  const media = await MessageMedia.fromUrl('https://static.wikia.nocookie.net/marvelmovies/images/0/06/J.A.R.V.I.S..jpg')
+  media.mimetype = "image/jpg"
+  media.filename = "Warning.png";
+  mainID_Motion.sendMessage(UserToSayHello,media,{caption: `Hi It's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n\n An Extra Ordinary AI Bot Working For MY Master 𝙎𝘼𝙈 \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`});
+  
 
 }
