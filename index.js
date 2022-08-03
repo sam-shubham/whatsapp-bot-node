@@ -119,7 +119,7 @@ admin_id.on('message', (message) => {
 mainID_Motion.on('message_create', (message) => {
 
   //console.log(message);
-  console.log({'fromMe':message.fromMe,'to':message.to,'mediaKey':message.mediaKey,'hasQuotedMsg':message.hasQuotedMsg,'type':message.type,'hasMedia':message.hasMedia,'message':message.body,'QuotedMsg':message.QuotedMsg})
+  //console.log({'fromMe':message.fromMe,'to':message.to,'mediaKey':message.mediaKey,'hasQuotedMsg':message.hasQuotedMsg,'type':message.type,'hasMedia':message.hasMedia,'message':message.body,'QuotedMsg':message.QuotedMsg})
 
   if(message.fromMe){
     let key = String(message.body);
