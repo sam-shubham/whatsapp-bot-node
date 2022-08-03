@@ -182,6 +182,13 @@ mainID_Motion.on('message_create', (message) => {
     message.delete(true);
 
 
+}else if(key.includes('.intro') ){
+  
+  
+  SayHello(message.to);
+  message.delete(true);
+
+
 }
   
 
@@ -443,7 +450,7 @@ function AdminSpamMsg(message,chatID,Quantity,id){
 }
 
 async function Main_Warn(times,Warned_User){
-  const media = await MessageMedia.fromUrl('https://static.wikia.nocookie.net/marvelmovies/images/0/06/J.A.R.V.I.S..jpg')
+  const media = await MessageMedia.fromUrl('https://res.cloudinary.com/dyhsn3dnm/image/upload/v1659563875/J.A.R.V.I.S._xvebbz.jpg')
   media.mimetype = "image/jpg"
   media.filename = "Warning.png";
   mainID_Motion.sendMessage(Warned_User,media,{caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\nᴡᴀʀɴɪɴɢ : ${times}/10 \n \nSam Has Added You To Suspect List.... So you Are In My Eye👁️ \n\n I Am Warning You 😡 Not To Message.. Otherwise You Will Be Automatically Blocked ⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`})
@@ -452,7 +459,7 @@ async function Main_Warn(times,Warned_User){
 
 async function MainBlockUser (UserToBlock) {
   
-  const media = await MessageMedia.fromUrl('https://static.wikia.nocookie.net/marvelmovies/images/0/06/J.A.R.V.I.S..jpg')
+  const media = await MessageMedia.fromUrl('https://res.cloudinary.com/dyhsn3dnm/image/upload/v1659563875/J.A.R.V.I.S._xvebbz.jpg')
   media.mimetype = "image/jpg"
   media.filename = "Warning.png";
   
@@ -466,7 +473,7 @@ async function MainBlockUser (UserToBlock) {
 }
 
 async function MainApproveUser(userToApprove){
-  const media = await MessageMedia.fromUrl('https://static.wikia.nocookie.net/marvelmovies/images/0/06/J.A.R.V.I.S..jpg')
+  const media = await MessageMedia.fromUrl('https://res.cloudinary.com/dyhsn3dnm/image/upload/v1659563875/J.A.R.V.I.S._xvebbz.jpg')
   media.mimetype = "image/jpg"
   media.filename = "Warning.png";
   
@@ -482,7 +489,7 @@ async function MainApproveUser(userToApprove){
 }
 
 async function MainAddSuspect(UserToAddInSuspects){
-  const media = await MessageMedia.fromUrl('https://static.wikia.nocookie.net/marvelmovies/images/0/06/J.A.R.V.I.S..jpg')
+  const media = await MessageMedia.fromUrl('https://res.cloudinary.com/dyhsn3dnm/image/upload/v1659563875/J.A.R.V.I.S._xvebbz.jpg')
   media.mimetype = "image/jpg"
   media.filename = "Warning.png";
   mainID_Motion.sendMessage(UserToAddInSuspects,media,{caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n \nSam Has Added You To Suspect List.... So you Are In My Eye👁️ \n\n I Am Warning You 😡 Not To Message.. Otherwise You Will Be Automatically Blocked After 10 WARNINGS ⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`});
@@ -495,7 +502,7 @@ async function MainAddSuspect(UserToAddInSuspects){
 }
 
 async function SayHello(UserToSayHello){
-  const media = await MessageMedia.fromUrl('https://static.wikia.nocookie.net/marvelmovies/images/0/06/J.A.R.V.I.S..jpg')
+  const media = await MessageMedia.fromUrl('https://res.cloudinary.com/dyhsn3dnm/image/upload/v1659563875/J.A.R.V.I.S._xvebbz.jpg')
   media.mimetype = "image/jpg"
   media.filename = "Warning.png";
   mainID_Motion.sendMessage(UserToSayHello,media,{caption: `Hi It's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n\n An Extra Ordinary AI Bot Working For MY Master 𝙎𝘼𝙈 \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`});
