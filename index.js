@@ -548,8 +548,13 @@ async function MainBlockUser (UserToBlock) {
   mainID_Motion.sendMessage(UserToBlock,media,{caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n  Crossed The LIMIT ........... \n\nLet's See How Blocking You... Tastes🤣\n\n⚠️⚠️  ＢＬＯＣＫＥＤ  ⚠️⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`})
   const contact = await mainID_Motion.getContactById(UserToBlock);
   
-  contact.block();
-  LOGG('mainID',`User Blocked ${UserToBlock.replace('@c.us','')}`)
+  if(contact.isBlocked){
+    contact.block();
+    LOGG('mainID',`User Blocked ${UserToBlock.replace('@c.us','')}`)
+
+  }
+  
+  
   
 }
 
