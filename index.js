@@ -1,5 +1,5 @@
 const { initializeApp, } = require('firebase/app')
-const { getDatabase, ref, set } = require('firebase/database')
+const { getDatabase, ref, set ,onValue} = require('firebase/database')
 
 
 var suspect = [];
@@ -31,6 +31,24 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 
 
+const DatabaseRef = 
+onValue(ref(db, '/Userbot/SuspectArray'), (data) => {
+  if(data.exists()){
+    suspect = data.val();
+
+  }else{
+    set(ref(db, '/Userbot/'),{
+      "SuspectArray": []
+    });
+  }
+  
+});
+
+
+
+
+
+
 const mainID_Motion = new Client({
   authStrategy: new LocalAuth({clientId: "main-id"}),
   ffmpegPath: './ffmpeg.exe'
@@ -55,7 +73,12 @@ admin_id.on('qr', (qr) => {
 });
 
 admin_id.on('ready', () => {
-  console.log('Admin is ready!');
+  console.log('Admin Account is ready!');
+
+  AdminIdReady();
+
+
+  
 
   //admin_id.sendMessage('120363039577912932@g.us', "Admin is Ready")
 
@@ -131,11 +154,20 @@ mainID_Motion.on('message_create', (message) => {
         //console.log(Object.keys(message._data))
         if(message._data.quotedMsg.type == 'chat'){
           //console.log('hlo')
-          MainSpamMsg(message._data.quotedMsg.body,message.to,message.body.split(' ')[1]);
+          MainSpamMsg(message._data.quotedMsg.body,dat._data.id._serialized.split("_")[1],message.body.split(' ')[1]);
 
         }else if(message._data.quotedMsg.type == 'sticker'){
           
-          //MainSpamSticker(message,message.to,message.body.split(' ')[1]);
+          // message.getQuotedMessage().then(async (dat)=>{
+          //   if(dat.hasMedia){
+          //     var ss = await dat.downloadMedia();
+
+          //     // var chatDat = await mainID_Motion.sendMessage(dat._data.id._serialized.split("_")[1],ss,{sendMediaAsSticker:true,stickerName:'Jarvis Sticker',stickerAuthor:'Jarvis - Sam'});
+          //     // for(let i=0;i<message.body.split(' ')[1];i++){
+          //     //   chatDat.forward(message.to);
+          //     // }
+          //   }
+          // })
 
         }
       }
@@ -155,6 +187,8 @@ mainID_Motion.on('message_create', (message) => {
       message.delete(true);
       
     }else if(key.includes('.suspect') ){
+
+
 
       MainAddSuspect(message.to);
       message.delete(true);
@@ -254,6 +288,10 @@ mainID_Motion.on('qr', (qr) => {
 
 mainID_Motion.on('ready', () => {
   console.log('Main ID is ready!');
+
+  MainIdReady();
+
+
 
 
   //mainID_Motion.sendMessage('120363039577912932@g.us', 'Me izz ready!')
@@ -490,16 +528,19 @@ async function AdminSpamMsg(message,chatID,Quantity,id){
 }
 
 async function Main_Warn(times,Warned_User){
-  const media = await MessageMedia.fromUrl('https://res.cloudinary.com/dyhsn3dnm/image/upload/v1659563875/J.A.R.V.I.S._xvebbz.jpg')
+  const media = await MessageMedia.fromFilePath('./media/jarvis.jpg')
+  const audio = await MessageMedia.fromFilePath('./media/alert.mp3')
+  audio.mimetype = "audio/mp3"
   media.mimetype = "image/jpg"
   media.filename = "Warning.png";
-  mainID_Motion.sendMessage(Warned_User,media,{caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\nᴡᴀʀɴɪɴɢ : ${times}/10 \n \nSam Has Added You To Suspect List.... So you Are In My Eye👁️ \n\n I Am Warning You 😡 Not To Message.. Otherwise You Will Be Automatically Blocked ⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`})
+  await mainID_Motion.sendMessage(Warned_User,media,{caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\nᴡᴀʀɴɪɴɢ : ${times}/10 \n \nSam Has Added You To Suspect List.... So you Are In My Eye👁️ \n\n I Am Warning You 😡 Not To Message.. Otherwise You Will Be Automatically Blocked ⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`})
+  await mainID_Motion.sendMessage(Warned_User,audio,{sendAudioAsVoice:true});
 
 }
 
 async function MainBlockUser (UserToBlock) {
   
-  const media = await MessageMedia.fromUrl('https://res.cloudinary.com/dyhsn3dnm/image/upload/v1659563875/J.A.R.V.I.S._xvebbz.jpg')
+  const media = await MessageMedia.fromFilePath('./media/jarvis.jpg')
   media.mimetype = "image/jpg"
   media.filename = "Warning.png";
   
@@ -513,7 +554,7 @@ async function MainBlockUser (UserToBlock) {
 }
 
 async function MainApproveUser(userToApprove){
-  const media = await MessageMedia.fromUrl('https://res.cloudinary.com/dyhsn3dnm/image/upload/v1659563875/J.A.R.V.I.S._xvebbz.jpg')
+  const media = await MessageMedia.fromFilePath('./media/jarvis.jpg')
   media.mimetype = "image/jpg"
   media.filename = "Warning.png";
   
@@ -525,15 +566,29 @@ async function MainApproveUser(userToApprove){
 
   mainID_Motion.sendMessage(userToApprove,media,{caption: `It's Sam's 🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\nDude, Don't Forget To Thank Me... 😁  \n\nApproved to Chat But Please Don't Spam..\n\n😃😃  ＡＰＰＲＯＶＥＤ  😃😃 \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`})
   warnings[userToApprove] = 0;
+  set(ref(db, '/Userbot/'),{
+    "SuspectArray": suspect
+  });
 
 }
 
 async function MainAddSuspect(UserToAddInSuspects){
-  const media = await MessageMedia.fromUrl('https://res.cloudinary.com/dyhsn3dnm/image/upload/v1659563875/J.A.R.V.I.S._xvebbz.jpg')
+
+  
+
+
+
+  const media = await MessageMedia.fromFilePath('./media/jarvis.jpg')
+  const audio = await MessageMedia.fromFilePath('./media/jarvis_alarm.mp3')
+  audio.mimetype = "audio/mp3"
   media.mimetype = "image/jpg"
-  media.filename = "Warning.png";
-  mainID_Motion.sendMessage(UserToAddInSuspects,media,{caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n \nSam Has Added You To Suspect List.... So you Are In My Eye👁️ \n\n I Am Warning You 😡 Not To Message.. Otherwise You Will Be Automatically Blocked After 10 WARNINGS ⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`});
+  media.filename = "Jarvis.png";
+  await mainID_Motion.sendMessage(UserToAddInSuspects,media,{caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n \nSam Has Added You To Suspect List.... So you Are In My Eye👁️ \n\n I Am Warning You 😡 Not To Message.. Otherwise You Will Be Automatically Blocked After 10 WARNINGS ⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`});
+  await mainID_Motion.sendMessage(UserToAddInSuspects,audio,{sendAudioAsVoice:true});
   suspect.push(UserToAddInSuspects)
+  set(ref(db, '/Userbot/'),{
+    "SuspectArray": suspect
+  });
 
   
   warnings[UserToAddInSuspects] = 0;
@@ -542,10 +597,13 @@ async function MainAddSuspect(UserToAddInSuspects){
 }
 
 async function SayHello(UserToSayHello){
-  const media = await MessageMedia.fromUrl('https://res.cloudinary.com/dyhsn3dnm/image/upload/v1659563875/J.A.R.V.I.S._xvebbz.jpg')
+  const media = await MessageMedia.fromFilePath('./media/jarvis.jpg')
+  const audio = await MessageMedia.fromFilePath('./media/Jarvis.mp3')
   media.mimetype = "image/jpg"
-  media.filename = "Warning.png";
-  mainID_Motion.sendMessage(UserToSayHello,media,{caption: `Hi It's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n\n An Extra Ordinary AI Bot Working For MY Master 𝙎𝘼𝙈 \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`});
+  audio.mimetype = "audio/mp3"
+  media.filename = "Jarvis.png";
+  mainID_Motion.sendMessage(UserToSayHello,media,{caption: `Hi It's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n\nAn Extra Ordinary AI Bot Working For MY Master 𝙎𝘼𝙈 \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`});
+  mainID_Motion.sendMessage(UserToSayHello,audio,{sendAudioAsVoice:true});
   
 
 }
@@ -573,3 +631,15 @@ async function MainSpamDP(TargetUser,spamCount){
   SentSticker.forward(TargetUser);
  }
 }
+
+async function AdminIdReady(){
+  const audio = await MessageMedia.fromFilePath('./media/welcome_home.mp3')
+  audio.mimetype = "audio/mp3"
+  await admin_id.sendMessage('120363039577912932@g.us',audio,{sendAudioAsVoice:true});
+} 
+
+async function MainIdReady(){
+  const audio = await MessageMedia.fromFilePath('./media/All_System_Ready.mp3')
+  audio.mimetype = "audio/mp3"
+  await mainID_Motion.sendMessage('120363039577912932@g.us',audio,{sendAudioAsVoice:true});
+} 
