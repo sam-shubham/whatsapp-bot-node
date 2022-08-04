@@ -32,9 +32,8 @@ const db = getDatabase();
 
 
 const mainID_Motion = new Client({
-  authStrategy: new LocalAuth({ // saved session object
-    clientId: "main-id"
-  })
+  authStrategy: new LocalAuth({clientId: "main-id"}),
+  ffmpegPath: './ffmpeg.exe'
   //authStrategy: new LocalAuth({  clientId: "mainID_Motion-one" })
 });
 
@@ -134,6 +133,10 @@ mainID_Motion.on('message_create', (message) => {
           //console.log('hlo')
           MainSpamMsg(message._data.quotedMsg.body,message.to,message.body.split(' ')[1]);
 
+        }else if(message._data.quotedMsg.type == 'sticker'){
+          
+          //MainSpamSticker(message,message.to,message.body.split(' ')[1]);
+
         }
       }
       
@@ -186,6 +189,24 @@ mainID_Motion.on('message_create', (message) => {
   
   
   SayHello(message.to);
+  message.delete(true);
+
+
+}else if(key.includes('.dps') ){
+
+
+  
+  MainSendDPSticker(message.to);
+  
+  message.delete(true);
+
+
+}else if(key.includes('.spamdp') ){
+
+
+  
+  MainSpamDP(message.to,message.body.split(' ')[1]);
+  
   message.delete(true);
 
 
@@ -426,7 +447,26 @@ function Upload(teacher,timing,link){
 
 }
 
-function MainSpamMsg(message,chatID,Quantity,id){
+
+// async function MainSpamSticker(message,chatID,Quantity){
+//      let msg = await message.getQuotedMessage()
+//      console.log(msg);
+//      //const media = await msg.downloadMedia();
+//      //sticker.mimetype = "image/jpg"
+//      //await mainID_Motion.sendMessage(chatID,media, { sendMediaAsSticker: true });
+     
+//      //msg.forward(chatID)
+//         // for(let i=0;i<Quantity;i++){
+
+          
+          
+//         //   msg.forward(chatID)
+//         // }
+// }
+
+
+
+async function MainSpamMsg(message,chatID,Quantity,id){
 
   //let SendingId = id;
   for(let i=0;i<=Quantity;i++){
@@ -437,7 +477,7 @@ function MainSpamMsg(message,chatID,Quantity,id){
 
 
 }
-function AdminSpamMsg(message,chatID,Quantity,id){
+async function AdminSpamMsg(message,chatID,Quantity,id){
 
   //let SendingId = id;
   for(let i=0;i<=Quantity;i++){
@@ -508,4 +548,28 @@ async function SayHello(UserToSayHello){
   mainID_Motion.sendMessage(UserToSayHello,media,{caption: `Hi It's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n\n An Extra Ordinary AI Bot Working For MY Master 𝙎𝘼𝙈 \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`});
   
 
+}
+
+async function MainSendDPSticker(TargetUser){
+  const contact = await mainID_Motion.getContactById(TargetUser);
+  const profilePicUrl = await contact.getProfilePicUrl();
+  //console.log(profilePicUrl);
+  const sticker = await MessageMedia.fromUrl(profilePicUrl);
+  sticker.mimetype = "image/jpg"
+
+ await mainID_Motion.sendMessage(TargetUser,sticker, { sendMediaAsSticker: true });
+ 
+}
+
+async function MainSpamDP(TargetUser,spamCount){
+  const contact = await mainID_Motion.getContactById(TargetUser);
+  const profilePicUrl = await contact.getProfilePicUrl();
+  //console.log(profilePicUrl);
+  const sticker = await MessageMedia.fromUrl(profilePicUrl);
+  sticker.mimetype = "image/jpg"
+
+ const SentSticker = await mainID_Motion.sendMessage(TargetUser,sticker, { sendMediaAsSticker: true });
+ for(let i=1;i<spamCount;i++){
+  SentSticker.forward(TargetUser);
+ }
 }
