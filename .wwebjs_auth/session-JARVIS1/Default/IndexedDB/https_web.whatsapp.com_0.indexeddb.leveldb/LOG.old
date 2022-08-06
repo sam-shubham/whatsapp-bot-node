@@ -1,0 +1,17 @@
+2022/08/06-07:47:33.299 6160 Reusing MANIFEST C:\Users\mrshu\Desktop\whatsapp-bot-node.js\.wwebjs_auth\session-JARVIS1\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2022/08/06-07:47:33.299 6160 Recovering log #106
+2022/08/06-07:47:33.554 6160 Reusing old log C:\Users\mrshu\Desktop\whatsapp-bot-node.js\.wwebjs_auth\session-JARVIS1\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000106.log 
+2022/08/06-07:47:44.667 5b48 Level-0 table #113: started
+2022/08/06-07:47:44.704 5b48 Level-0 table #113: 1220654 bytes OK
+2022/08/06-07:47:44.708 5b48 Delete type=0 #106
+2022/08/06-07:47:45.587 22fc Compacting 1@1 + 3@2 files
+2022/08/06-07:47:45.677 22fc Generated table #114@1: 30415 keys, 2266560 bytes
+2022/08/06-07:47:45.744 22fc Generated table #115@1: 24659 keys, 2276386 bytes
+2022/08/06-07:47:45.835 22fc Generated table #116@1: 56647 keys, 2236529 bytes
+2022/08/06-07:47:45.863 22fc Generated table #117@1: 8159 keys, 325859 bytes
+2022/08/06-07:47:45.863 22fc Compacted 1@1 + 3@2 files => 7105334 bytes
+2022/08/06-07:47:45.866 22fc compacted to: files[ 0 0 4 0 0 0 0 ]
+2022/08/06-07:47:45.866 22fc Delete type=2 #108
+2022/08/06-07:47:45.866 22fc Delete type=2 #109
+2022/08/06-07:47:45.866 22fc Delete type=2 #110
+2022/08/06-07:47:45.866 22fc Delete type=2 #113
