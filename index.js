@@ -15,13 +15,12 @@ const {
   LocalAuth,
   NoAuth,
   MessageMedia,
-  RemoteAuth,
 } = require("whatsapp-web.js");
-const { MongoStore } = require("wwebjs-mongo");
-const mongoose = require("mongoose");
+//const { MongoStore } = require("wwebjs-mongo");
+//const mongoose = require("mongoose");
 
 
-Help = " ---HELP MENU--- \n\n\n\spamDpJarvis \n\ncheckJarvis\n\nspamJarvis\n\nassemble\n\nnewJarvis\n\nspamdp\n\ndps\n\nintro\n\napprove\n\nsuspect\n\nblock\n\n"
+Help = " ---HELP MENU--- \n\n\n\pingJarvis\n\nspamDpJarvis \n\ncheckJarvis\n\nspamJarvis\n\nassemble\n\nnewJarvis\n\nspamdp\n\ndps\n\nintro\n\napprove\n\nsuspect\n\nblock\n\n"
 
 
 
@@ -111,7 +110,7 @@ const DatabaseRef = onValue(ref(db, "/Userbot/SuspectArray"), (data) => {
 
 const mainID_Motion = new Client({
   authStrategy: new LocalAuth({ clientId: "main-id" }),
-  ffmpegPath: "./ffmpeg.exe",
+  
   //authStrategy: new LocalAuth({  clientId: "mainID_Motion-one" })
 });
 
@@ -310,6 +309,8 @@ mainID_Motion.on("message_create", (message) => {
       AddUser();
     }else if (key.includes(".assemble")) {
       JarvisAssemble();
+    }else if (key.includes(".pingJarvis")) {
+      JarvisPing();
     } else if (key.includes(".spamJarvis")) {
       if (message.hasQuotedMsg) {
         //console.log(Object.keys(message._data));
@@ -726,6 +727,9 @@ async function AllIdReady() {
   await admin_id.sendMessage("120363039577912932@g.us", audio, {
     sendAudioAsVoice: true,
   });
+  await admin_id.sendMessage("120363044894077122@g.us", audio, {
+    sendAudioAsVoice: true,
+  });
   admin_id.sendMessage("120363039577912932@g.us", 'All Systems Ready For Operation...');
 }
 
@@ -733,6 +737,9 @@ async function MainIdReady() {
   const audio = await MessageMedia.fromFilePath("./media/jarvis_alarm.mp3");
   audio.mimetype = "audio/mp3";
   await mainID_Motion.sendMessage("120363039577912932@g.us", audio, {
+    sendAudioAsVoice: true,
+  });
+  await mainID_Motion.sendMessage("120363044894077122@g.us", audio, {
     sendAudioAsVoice: true,
   });
 }
@@ -753,13 +760,15 @@ async function ConnectAuthenticatedUsers() {
 
     JarvisGang[`JARVIS${i}`].initialize();
 
+   
+
     await JarvisGang[`JARVIS${i}`].on("ready", () => {
       console.log(`J.A.R.V.I.S ${i} is Ready`);
 
        JarvisGang[`JARVIS${i}`].sendMessage('120363044894077122@g.us', audio, {
         sendAudioAsVoice: true,
       });
-      if(i=JarvisGangCount){AllIdReady()}
+      if(i==JarvisGangCount){AllIdReady()}
 
 
 
@@ -772,7 +781,8 @@ async function ConnectAuthenticatedUsers() {
 async function AddUser() {
   const audio = await MessageMedia.fromFilePath("./media/alert.mp3");
   audio.mimetype = "audio/mp3";
-  var ClientNumber = JarvisGangCount + 1;
+let  ClientNumber = JarvisGangCount + 1
+  if(true){
   JarvisGang[`JARVIS${ClientNumber}`] = await new Client({
     authStrategy: await new LocalAuth({ clientId: `JARVIS${ClientNumber}` }),
   });
@@ -792,7 +802,10 @@ async function AddUser() {
    JarvisGang[`JARVIS${ClientNumber}`].sendMessage(admin_id.info.wid._serialized, audio, {
     sendAudioAsVoice: true,
   });
-  });
+
+  
+  });}
+  
 }
 
 async function UltraJarvisSpam(TargetID, type, content, times) {
@@ -891,6 +904,7 @@ async function JoinJarvisArmy() {
 
       for (let j = 1; j <= Object.keys(JarvisGang).length; j++) {
         //console.log(await JarvisGang[`JARVIS${j}`].info.wid._serialized);
+        
         if (
           !JarvisArmy.includes(
             await JarvisGang[`JARVIS${j}`].info.wid._serialized
@@ -916,6 +930,20 @@ async function JarvisAssemble(){
   for (let j = 1; j <= Object.keys(JarvisGang).length; j++) {
    console.log(await  JarvisGang[`JARVIS${j}`].setDisplayName("JARVIS"))
     JarvisGang[`JARVIS${j}`].setStatus("Ability To Destroy You..........") 
+
+
+
+
+  }
+
+
+}
+
+async function JarvisPing(){
+
+  for (let j = 1; j <= Object.keys(JarvisGang).length; j++) {
+   
+    JarvisGang[`JARVIS${j}`].sendMessage('916201403304@g.us',"I am Alive....") 
 
 
 
