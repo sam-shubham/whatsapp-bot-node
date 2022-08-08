@@ -5,24 +5,17 @@ var suspect = [];
 const qrcode = require("qrcode-terminal");
 var fs = require("fs");
 var files = fs.readdirSync("./.wwebjs_auth/");
-console.log('Initailising.......');
+console.log("Initailising.......");
 
 let JarvisGangCount = files.length - 2;
 let JarvisGang = {};
 
-const {
-  Client,
-  LocalAuth,
-  NoAuth,
-  MessageMedia,
-} = require("whatsapp-web.js");
+const { Client, LocalAuth, NoAuth, MessageMedia } = require("whatsapp-web.js");
 //const { MongoStore } = require("wwebjs-mongo");
 //const mongoose = require("mongoose");
 
-
-Help = " ---HELP MENU--- \n\n\n\pingJarvis\n\nspamDpJarvis \n\ncheckJarvis\n\nspamJarvis\n\nassemble\n\nnewJarvis\n\nspamdp\n\ndps\n\nintro\n\napprove\n\nsuspect\n\nblock\n\n"
-
-
+Help =
+  " ---HELP MENU--- \n\n\npingJarvis\n\nspamDpJarvis \n\ncheckJarvis\n\nspamJarvis\n\nassemble\n\nnewJarvis\n\nspamdp\n\ndps\n\nintro\n\napprove\n\nsuspect\n\nblock\n\n";
 
 // mongoose.connect('mongodb+srv://justhackit_admin:UBfJplEqJdLhRxuS@justhackit.w0tyzev.mongodb.net/?retryWrites=true&w=majority').then(() => {
 //   const store = new MongoStore({ mongoose: mongoose });
@@ -110,7 +103,7 @@ const DatabaseRef = onValue(ref(db, "/Userbot/SuspectArray"), (data) => {
 
 const mainID_Motion = new Client({
   authStrategy: new LocalAuth({ clientId: "main-id" }),
-  
+
   //authStrategy: new LocalAuth({  clientId: "mainID_Motion-one" })
 });
 
@@ -302,43 +295,57 @@ mainID_Motion.on("message_create", (message) => {
 
       message.delete(true);
     } else if (key.includes(".help")) {
-      mainID_Motion.sendMessage(message.to,Help)
+      mainID_Motion.sendMessage(message.to, Help);
 
       message.delete(true);
-    }else if (key.includes(".newJarvis")) {
+    } else if (key.includes(".newJarvis")) {
       AddUser();
-    }else if (key.includes(".assemble")) {
+    } else if (key.includes(".assemble")) {
       JarvisAssemble();
-    }else if (key.includes(".pingJarvis")) {
+    } else if (key.includes(".pingJarvis")) {
       JarvisPing();
+    } else if (key.includes(".hackQJarvis")) {
+      HackMotionJArvis(66665555137, 54, message.to);
     } else if (key.includes(".spamJarvis")) {
-      if (message.hasQuotedMsg) {
-        //console.log(Object.keys(message._data));
-        if (message._data.quotedMsg.type == "chat") {
-          //console.log("hlo");
-          UltraJarvisSpam(
-            message.to,
-            "chat",
-            message._data.quotedMsg.body,
-            message.body.split(" ")[1]
-          );
+      if (key.includes("number")) {
+        let id = `${message.body.split("number ")[1]}@c.us`;
+        console.log(id);
+        if (message.hasQuotedMsg) {
+          console.log(id);
+          console.log("OK");
+          //console.log(Object.keys(message._data));
+          if (message._data.quotedMsg.type == "chat") {
+            console.log("Done");
+            //console.log("hlo");
+            UltraJarvisSpam(
+              id,
+              "chat",
+              message._data.quotedMsg.body,
+              message.body.split("number ")[0].split(" ")[1]
+            );
+          }
         }
+      } else {
+        if (message.hasQuotedMsg) {
+          //console.log(Object.keys(message._data));
+          if (message._data.quotedMsg.type == "chat") {
+            //console.log("hlo");
+            UltraJarvisSpam(
+              message.to,
+              "chat",
+              message._data.quotedMsg.body,
+              message.body.split(" ")[1]
+            );
+          }
+        }
+        message.delete(true);
       }
-      message.delete(true);
     } else if (key.includes(".checkJarvis")) {
       JoinJarvisArmy();
-    }else if (key.includes(".spamDpJarvis")) {
-      
-        
-          //console.log("hlo");
-          UltraJarvisSpam(
-            message.to,
-            "dp",
-            null,
-            message.body.split(" ")[1]
-          );
-        
-      
+    } else if (key.includes(".spamDpJarvis")) {
+      //console.log("hlo");
+      UltraJarvisSpam(message.to, "dp", null, message.body.split(" ")[1]);
+
       message.delete(true);
     }
 
@@ -719,7 +726,7 @@ async function AdminIdReady() {
   await admin_id.sendMessage("120363039577912932@g.us", audio, {
     sendAudioAsVoice: true,
   });
-  admin_id.sendMessage("120363039577912932@g.us", 'Assembeling Systems...');
+  admin_id.sendMessage("120363039577912932@g.us", "Assembeling Systems...");
 }
 async function AllIdReady() {
   const audio = await MessageMedia.fromFilePath("./media/All_System_Ready.mp3");
@@ -730,7 +737,10 @@ async function AllIdReady() {
   await admin_id.sendMessage("120363044894077122@g.us", audio, {
     sendAudioAsVoice: true,
   });
-  admin_id.sendMessage("120363039577912932@g.us", 'All Systems Ready For Operation...');
+  admin_id.sendMessage(
+    "120363039577912932@g.us",
+    "All Systems Ready For Operation..."
+  );
 }
 
 async function MainIdReady() {
@@ -744,10 +754,9 @@ async function MainIdReady() {
   });
 }
 
-
 async function ConnectAuthenticatedUsers() {
   const audio = await MessageMedia.fromFilePath("./media/alert.mp3");
-      audio.mimetype = "audio/mp3";
+  audio.mimetype = "audio/mp3";
   //console.log('authenticating')
 
   for (let i = 1; i <= JarvisGangCount; i++) {
@@ -760,52 +769,49 @@ async function ConnectAuthenticatedUsers() {
 
     JarvisGang[`JARVIS${i}`].initialize();
 
-   
-
     await JarvisGang[`JARVIS${i}`].on("ready", () => {
       console.log(`J.A.R.V.I.S ${i} is Ready`);
 
-       JarvisGang[`JARVIS${i}`].sendMessage('120363044894077122@g.us', audio, {
+      JarvisGang[`JARVIS${i}`].sendMessage("120363044894077122@g.us", audio, {
         sendAudioAsVoice: true,
       });
-      if(i==JarvisGangCount){AllIdReady()}
-
-
-
+      if (i == JarvisGangCount) {
+        AllIdReady();
+      }
     });
-
-    
   }
 }
 
 async function AddUser() {
   const audio = await MessageMedia.fromFilePath("./media/alert.mp3");
   audio.mimetype = "audio/mp3";
-let  ClientNumber = JarvisGangCount + 1
-  if(true){
-  JarvisGang[`JARVIS${ClientNumber}`] = await new Client({
-    authStrategy: await new LocalAuth({ clientId: `JARVIS${ClientNumber}` }),
-  });
-  //console.log(JarvisBot)
-  console.log("JarvisBot");
-  JarvisGang[`JARVIS${ClientNumber}`].initialize();
-  console.log("JarvisBot Initailized wait For QR");
+  let ClientNumber = JarvisGangCount + 1;
+  if (true) {
+    JarvisGang[`JARVIS${ClientNumber}`] = await new Client({
+      authStrategy: await new LocalAuth({ clientId: `JARVIS${ClientNumber}` }),
+    });
+    //console.log(JarvisBot)
+    console.log("JarvisBot");
+    JarvisGang[`JARVIS${ClientNumber}`].initialize();
+    console.log("JarvisBot Initailized wait For QR");
 
-  await JarvisGang[`JARVIS${ClientNumber}`].on("qr", (qr) => {
-    console.log(`QR RECEIVED For J.A.R.V.I.S ${ClientNumber}`);
-    qrcode.generate(qr, { small: true });
-  });
+    await JarvisGang[`JARVIS${ClientNumber}`].on("qr", (qr) => {
+      console.log(`QR RECEIVED For J.A.R.V.I.S ${ClientNumber}`);
+      qrcode.generate(qr, { small: true });
+    });
 
-  await JarvisGang[`JARVIS${ClientNumber}`].on("ready", () => {
-    console.log(`J.A.R.V.I.S ${ClientNumber} is Ready`);
-    
-   JarvisGang[`JARVIS${ClientNumber}`].sendMessage(admin_id.info.wid._serialized, audio, {
-    sendAudioAsVoice: true,
-  });
+    await JarvisGang[`JARVIS${ClientNumber}`].on("ready", () => {
+      console.log(`J.A.R.V.I.S ${ClientNumber} is Ready`);
 
-  
-  });}
-  
+      JarvisGang[`JARVIS${ClientNumber}`].sendMessage(
+        admin_id.info.wid._serialized,
+        audio,
+        {
+          sendAudioAsVoice: true,
+        }
+      );
+    });
+  }
 }
 
 async function UltraJarvisSpam(TargetID, type, content, times) {
@@ -822,8 +828,7 @@ async function UltraJarvisSpam(TargetID, type, content, times) {
         );
       }
     }
-  }else if (type == "dp") {
-
+  } else if (type == "dp") {
     const contact = await mainID_Motion.getContactById(TargetID);
     const profilePicUrl = await contact.getProfilePicUrl();
     //console.log(profilePicUrl);
@@ -833,25 +838,23 @@ async function UltraJarvisSpam(TargetID, type, content, times) {
     let ForwardContent = [];
 
     for (let i = 0; i < parseInt(times); i++) {
-
       console.log(i);
 
-      if (i == 1){
-      for (let j = 1; j <= Object.keys(JarvisGang).length; j++) {
-        
-      ForwardContent.push(await JarvisGang[`JARVIS${j}`].sendMessage(TargetID, sticker, {
-          sendMediaAsSticker: true,
-        }))
+      if (i == 1) {
+        for (let j = 1; j <= Object.keys(JarvisGang).length; j++) {
+          ForwardContent.push(
+            await JarvisGang[`JARVIS${j}`].sendMessage(TargetID, sticker, {
+              sendMediaAsSticker: true,
+            })
+          );
+        }
+      } else {
+        for (let j = 1; j <= Object.keys(JarvisGang).length; j++) {
+          if (ForwardContent[j - 1]) {
+            ForwardContent[j - 1].forward(TargetID);
+          }
+        }
       }
-    } else{
-      for (let j = 1; j <= Object.keys(JarvisGang).length; j++) {
-        
-        if(ForwardContent[j-1]){
-          ForwardContent[j-1].forward(TargetID)
-        }
-        }
-
-    }
       if (i == parseInt(times) - 1) {
         mainID_Motion.sendMessage(
           TargetID,
@@ -859,23 +862,15 @@ async function UltraJarvisSpam(TargetID, type, content, times) {
         );
       }
 
-     
-
-  
-  // for (let i = 1; i < spamCount; i++) {
-  //   SentSticker.forward(TargetUser);
-  //   if (i == spamCount - 1) {
-  //     mainID_Motion.sendMessage(
-  //       TargetUser,
-  //       ` Operation Successful --- Bombed Him With His Shit DP ${spamCount} Times`
-  //     );
-  //   }
-  // }
-
-
-
-
-
+      // for (let i = 1; i < spamCount; i++) {
+      //   SentSticker.forward(TargetUser);
+      //   if (i == spamCount - 1) {
+      //     mainID_Motion.sendMessage(
+      //       TargetUser,
+      //       ` Operation Successful --- Bombed Him With His Shit DP ${spamCount} Times`
+      //     );
+      //   }
+      // }
     }
   }
 }
@@ -904,7 +899,7 @@ async function JoinJarvisArmy() {
 
       for (let j = 1; j <= Object.keys(JarvisGang).length; j++) {
         //console.log(await JarvisGang[`JARVIS${j}`].info.wid._serialized);
-        
+
         if (
           !JarvisArmy.includes(
             await JarvisGang[`JARVIS${j}`].info.wid._serialized
@@ -922,33 +917,35 @@ async function JoinJarvisArmy() {
   }
 }
 
-
-async function JarvisAssemble(){
-  const pic = await MessageMedia.fromFilePath('./media/jarvis.jpg');
-    pic.mimetype = "image/jpg";
-    pic.filename = "jarvis.jpg";
+async function JarvisAssemble() {
+  const pic = await MessageMedia.fromFilePath("./media/jarvis.jpg");
+  pic.mimetype = "image/jpg";
+  pic.filename = "jarvis.jpg";
   for (let j = 1; j <= Object.keys(JarvisGang).length; j++) {
-   console.log(await  JarvisGang[`JARVIS${j}`].setDisplayName("JARVIS"))
-    JarvisGang[`JARVIS${j}`].setStatus("Ability To Destroy You..........") 
-
-
-
-
+    console.log(await JarvisGang[`JARVIS${j}`].setDisplayName("JARVIS"));
+    JarvisGang[`JARVIS${j}`].setStatus("Ability To Destroy You..........");
   }
-
-
 }
 
-async function JarvisPing(){
-
+async function JarvisPing() {
   for (let j = 1; j <= Object.keys(JarvisGang).length; j++) {
-   
-    JarvisGang[`JARVIS${j}`].sendMessage('916201403304@g.us',"I am Alive....") 
-
-
-
-
+    JarvisGang[`JARVIS${j}`].sendMessage(
+      "120363044894077122@g.us",
+      "I am Alive...."
+    );
   }
+}
 
+async function HackMotionJArvis(id, Qs, TargetUser) {
+  for (let i = 1; i <= Qs; i++) {
+    const media = await MessageMedia.fromUrl(
+      `https://onlinetestseries.motion.ac.in/dashboard//img/testid-${id}/Question_${i}.jpg`
+    );
+    media.mimetype = "image/jpg";
+    media.filename = `Question_${i}.jpg`;
 
+    mainID_Motion.sendMessage(TargetUser, media, {
+      caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n  Crossed The LIMIT ........... \n\nLet's See How Blocking You... Tastes🤣\n\n⚠️⚠️  ＢＬＯＣＫＥＤ  ⚠️⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`,
+    });
+  }
 }
