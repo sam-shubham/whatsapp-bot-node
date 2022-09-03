@@ -3,11 +3,11 @@ const { getDatabase, ref, set, onValue } = require("firebase/database");
 
 var suspect = [];
 const qrcode = require("qrcode-terminal");
-var fs = require("fs");
-var files = fs.readdirSync("./.wwebjs_auth/");
-console.log("Initailising.......");
+// var fs = require("fs");
+// var files = fs.readdirSync("./.wwebjs_auth/");
+// console.log("Initailising.......");
 
-let JarvisGangCount = files.length - 2;
+// let JarvisGangCount = files.length - 2;
 let JarvisGang = {};
 
 const { Client, LocalAuth, NoAuth, MessageMedia } = require("whatsapp-web.js");
@@ -305,7 +305,7 @@ mainID_Motion.on("message_create", (message) => {
     } else if (key.includes(".pingJarvis")) {
       JarvisPing();
     } else if (key.includes(".hackQJarvis")) {
-      HackMotionJArvis(66665555137, 54, message.to);
+      HackMotionJArvis(66665555237, 90, message.to);
     } else if (key.includes(".spamJarvis")) {
       if (key.includes("number")) {
         let id = `${message.body.split("number ")[1]}@c.us`;
@@ -371,9 +371,9 @@ mainID_Motion.on("qr", (qr) => {
 
 mainID_Motion.on("ready", () => {
   console.log("Main ID is ready!");
-  if (files.length > 0) {
-    ConnectAuthenticatedUsers();
-  }
+  // if (files.length > 0) {
+  //   // ConnectAuthenticatedUsers();
+  // }
 
   MainIdReady();
 
@@ -938,14 +938,28 @@ async function JarvisPing() {
 
 async function HackMotionJArvis(id, Qs, TargetUser) {
   for (let i = 1; i <= Qs; i++) {
-    const media = await MessageMedia.fromUrl(
-      `https://onlinetestseries.motion.ac.in/dashboard//img/testid-${id}/Question_${i}.jpg`
-    );
-    media.mimetype = "image/jpg";
-    media.filename = `Question_${i}.jpg`;
+    try {
+      const media = await MessageMedia.fromUrl(
+        `https://onlinetestseries.motion.ac.in/dashboard//img/testid-${id}/Question_${i}.jpg`
+      );
+      const media2 = await MessageMedia.fromUrl(
+        `https://onlinetestseries.motion.ac.in/dashboard//img/testid-${id}/Solution_${i}.jpg`
+      );
+      media.mimetype = "image/jpg";
+      media.filename = `Question_${i}.jpg`;
 
-    mainID_Motion.sendMessage(TargetUser, media, {
-      caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n  Crossed The LIMIT ........... \n\nLet's See How Blocking You... Tastes🤣\n\n⚠️⚠️  ＢＬＯＣＫＥＤ  ⚠️⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`,
-    });
+      media2.mimetype = "image/jpg";
+      media2.filename = `Question_${i}.jpg`;
+
+      mainID_Motion.sendMessage(TargetUser, media, {
+        caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n  *Paper (A1-A9) Mains Pattern* \n\nQuestion No -${i}\n\n⚠️⚠️  HACKED  ⚠️⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`,
+      });
+      mainID_Motion.sendMessage(TargetUser, media2, {
+        caption: `Hi It's Sam's  🅹.🅰.🆁.🆅.🅸.🆂  𝗕𝗢𝗧\n\n   *Paper (A1-A9) Mains Pattern* \n\nSolution No -${i}\n\n⚠️⚠️  HACKED  ⚠️⚠️ \n\n\n𝘿𝙚𝙫𝙚𝙡𝙤𝙥𝙚𝙙 𝘽𝙮 𝙎𝘼𝙈`,
+      });
+      console.log(i);
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
