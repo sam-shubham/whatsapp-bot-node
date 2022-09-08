@@ -305,7 +305,9 @@ mainID_Motion.on("message_create", (message) => {
     } else if (key.includes(".pingJarvis")) {
       JarvisPing();
     } else if (key.includes(".hackQJarvis")) {
-      HackMotionJArvis(66665555237, 90, message.to);
+      let testid = key.split(" ")[1]
+      let totalq = key.split(" ")[2]
+      HackMotionJArvis(parseInt(testid), parseInt(totalq), message.to);
     } else if (key.includes(".spamJarvis")) {
       if (key.includes("number")) {
         let id = `${message.body.split("number ")[1]}@c.us`;
