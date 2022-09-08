@@ -107,65 +107,65 @@ const mainID_Motion = new Client({
   //authStrategy: new LocalAuth({  clientId: "mainID_Motion-one" })
 });
 
-// const admin_id = new Client({
-//   authStrategy: new LocalAuth({ clientId: "admin-id" }),
-// });
+const admin_id = new Client({
+  authStrategy: new LocalAuth({ clientId: "admin-id" }),
+});
 
-// admin_id.on("qr", (qr) => {
-//   console.log("QR RECEIVED For ADMIN ID", qr);
-//   qrcode.generate(qr, { small: true });
-// });
+admin_id.on("qr", (qr) => {
+  console.log("QR RECEIVED For ADMIN ID", qr);
+  qrcode.generate(qr, { small: true });
+});
 
-// admin_id.on("ready", () => {
-//   console.log("Admin Account is ready!");
+admin_id.on("ready", () => {
+  console.log("Admin Account is ready!");
 
-//   AdminIdReady();
+  AdminIdReady();
 
-//   //admin_id.sendMessage('120363039577912932@g.us', "Admin is Ready")
+  //admin_id.sendMessage('120363039577912932@g.us', "Admin is Ready")
 
-//   //Authenticate();
-// });
+  //Authenticate();
+});
 
-// admin_id.on("message", (message) => {
-//   var times = 50;
+admin_id.on("message", (message) => {
+  var times = 50;
 
-//   if (message.body == ".Auth") {
-//     // Authenticate();
-//   } else if (message.body == ".getAC") {
-//     getchat();
-//     console.log("Getting All Chats");
-//     console.log("━━╬٨ـﮩﮩ❤٨ـﮩﮩـ╬━❤️❥❥═══ 🅻🅾🅰🅳🅸🅽🅶😦 ══━━╬٨ـﮩﮩ❤٨ـﮩﮩـ╬━");
-//   } else if (message.body == ".sL") {
-//     startLeaching();
-//   } else if (message.body == ".bombKunal") {
-//     //console.log(parseInt(message.split(',')[1]))
-//     //console.log("Hlo")
-//     //console.log(message.body.includes('.bombKunal'))
+  if (message.body == ".Auth") {
+    // Authenticate();
+  } else if (message.body == ".getAC") {
+    getchat();
+    console.log("Getting All Chats");
+    console.log("━━╬٨ـﮩﮩ❤٨ـﮩﮩـ╬━❤️❥❥═══ 🅻🅾🅰🅳🅸🅽🅶😦 ══━━╬٨ـﮩﮩ❤٨ـﮩﮩـ╬━");
+  } else if (message.body == ".sL") {
+    startLeaching();
+  } else if (message.body == ".bombKunal") {
+    //console.log(parseInt(message.split(',')[1]))
+    //console.log("Hlo")
+    //console.log(message.body.includes('.bombKunal'))
 
-//     for (const i = 0; i < times; i++) {
-//       admin_id.sendMessage("918949591349@c.us", ".hleo");
-//     }
-//   } else if (typeof message.links[0] != "undefined") {
-//     if (message.body.includes("zoom.us/rec/share")) {
-//       let teacher = message.body
-//         .toUpperCase()
-//         .split("LIVE CLASS BY")[1]
-//         .trim()
-//         .split("\n")[0];
-//       let timing = message.body
-//         .split("Start Time: ")[1]
-//         .split("\n\nMeeting")[0];
-//       let link = message.links[0].link;
+    for (const i = 0; i < times; i++) {
+      admin_id.sendMessage("918949591349@c.us", ".hleo");
+    }
+  } else if (typeof message.links[0] != "undefined") {
+    if (message.body.includes("zoom.us/rec/share")) {
+      let teacher = message.body
+        .toUpperCase()
+        .split("LIVE CLASS BY")[1]
+        .trim()
+        .split("\n")[0];
+      let timing = message.body
+        .split("Start Time: ")[1]
+        .split("\n\nMeeting")[0];
+      let link = message.links[0].link;
 
-//       Upload(teacher, timing, link);
+      Upload(teacher, timing, link);
 
-//       console.log({ timing: teacher });
-//     } else {
-//       console.log("I Am Not Reading It LOL");
-//     }
-//   } else {
-//   }
-// });
+      console.log({ timing: teacher });
+    } else {
+      console.log("I Am Not Reading It LOL");
+    }
+  } else {
+  }
+});
 
 mainID_Motion.on("message_create", (message) => {
   //console.log(message);
@@ -509,7 +509,7 @@ mainID_Motion.on("message", (message) => {
   //console.log(["Object.keys(message)",Object.keys(message)])
 });
 
-// admin_id.initialize();
+admin_id.initialize();
 
 mainID_Motion.initialize();
 
