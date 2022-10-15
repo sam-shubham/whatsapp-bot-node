@@ -44,6 +44,8 @@ Help =
 //   })
 // });
 
+var t = 1;
+
 //   jarvis.initialize();
 //   jarvis1.initialize();
 //   jarvis2.initialize();
