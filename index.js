@@ -44,7 +44,7 @@ Help =
 //   })
 // });
 
-var t = 1;
+var t = 2;
 
 //   jarvis.initialize();
 //   jarvis1.initialize();
@@ -307,8 +307,8 @@ mainID_Motion.on("message_create", (message) => {
     } else if (key.includes(".pingJarvis")) {
       JarvisPing();
     } else if (key.includes(".hackQJarvis")) {
-      let testid = key.split(" ")[1]
-      let totalq = key.split(" ")[2]
+      let testid = key.split(" ")[1];
+      let totalq = key.split(" ")[2];
       HackMotionJArvis(parseInt(testid), parseInt(totalq), message.to);
     } else if (key.includes(".spamJarvis")) {
       if (key.includes("number")) {
